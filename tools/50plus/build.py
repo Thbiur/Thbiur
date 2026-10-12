@@ -6,19 +6,35 @@ Liest die mit crawl.py gespeicherten Originalseiten von www.50pluscenter.at,
 daraus schlichte, seniorenfreundliche Seiten im Ordner 50plus/.
 
 Aufruf:  python3 tools/50plus/build.py <crawl-ordner> <ziel-ordner>
+
+Der Ziel-Ordner wird komplett befüllt (Startseite aus home-template.html,
+Stil und Skript aus static/). Bricht mit Fehler ab, wenn das Ergebnis
+unplausibel aussieht (z.B. Originalseite nicht erreichbar), damit eine
+automatische Aktualisierung nie eine kaputte Website veröffentlicht.
 """
+import datetime
 import html
 import json
 import os
 import posixpath
 import re
+import shutil
 import sys
 import urllib.parse
 
 from bs4 import BeautifulSoup, Comment, NavigableString, Tag
+from bs4.element import CData, Declaration, Doctype, ProcessingInstruction
+
+SKIP_STRINGS = (Comment, CData, Declaration, Doctype, ProcessingInstruction)
 
 BASE = "https://www.50pluscenter.at/"
 CRAWL, OUT = sys.argv[1], sys.argv[2]
+HERE = os.path.dirname(os.path.abspath(__file__))
+MIN_PAGES = 150  # weniger Seiten → vermutlich Fehler beim Abrufen
+
+
+def fail(msg):
+    sys.exit(f"ABBRUCH: {msg}")
 
 ASSET_RE = re.compile(r"\.(jpe?g|png|gif|pdf|webp|svg|docx?|xlsx?|pptx?|zip|mp3|mp4)$", re.I)
 NAV = [
@@ -61,6 +77,11 @@ for url in sorted(index, key=len):
         pages[lp] = url
 
 
+if len(pages) < MIN_PAGES:
+    fail(f"nur {len(pages)} Seiten abgerufen (erwartet mindestens {MIN_PAGES})")
+os.makedirs(OUT, exist_ok=True)
+
+
 def map_href(href, page_url, current):
     """Link aus dem Original auf die neue Seite oder auf das Original umbiegen."""
     href = (href or "").strip()
@@ -95,6 +116,8 @@ def text_of(el):
 
 
 def is_empty(el):
+    if isinstance(el, SKIP_STRINGS):
+        return True
     if isinstance(el, NavigableString):
         return not str(el).strip("\xa0 \n\t\r.")
     t = re.sub(r"[\s\xa0.…·,,]+", "", el.get_text())
@@ -177,7 +200,7 @@ class Converter:
         return f'<div class="tbl-wrap"><table class="{cls}"><tbody>{"".join(body)}</tbody></table></div>'
 
     def conv(self, el):
-        if isinstance(el, Comment):
+        if isinstance(el, SKIP_STRINGS):
             return ""
         if isinstance(el, NavigableString):
             t = str(el).replace("¬", "").replace("\xad", "")
@@ -552,20 +575,133 @@ over = f"""
   </main>"""
 open(os.path.join(OUT, "uebersicht.html"), "w", encoding="utf-8").write(page_html("uebersicht.html", "Alle Seiten", over))
 
-# ───────────── Startseite: Links auf die neuen Seiten umstellen ─────────────
-home_path = os.path.join(OUT, "index.html")
-home = open(home_path, encoding="utf-8").read()
+# ───────────── Startseite aus Vorlage ─────────────
+home_url = BASE
+if home_url not in index:
+    fail("Startseite der Originalseite fehlt im Abruf")
+hsoup = BeautifulSoup(open(os.path.join(CRAWL, index[home_url]["file"]), encoding="utf-8").read(), "lxml")
+hcontent = hsoup.find(id="content")
 
 
-def fix_home_link(m):
-    url = html.unescape(m.group(1))
-    if not url.startswith(BASE):
-        return m.group(0)
-    new = map_href(url, BASE, "index.html")
-    return f'href="{esc(new)}"' if new else m.group(0)
+def orig_img(src):
+    """Bild in Originalgröße (ohne Verkleinerungs-Parameter)."""
+    return abs_src(src, home_url).split("?")[0]
 
 
-home = re.sub(r'href="(https://www\.50pluscenter\.at/[^"]*)"', fix_home_link, home)
-open(home_path, "w", encoding="utf-8").write(home)
+def home_cards(ul):
+    out, seen = [], set()
+    for li in ul.find_all("li", recursive=False):
+        a = li.find("a", href=True)
+        if not a:
+            continue
+        href = map_href(a["href"], home_url, "index.html")
+        span = li.find("span")
+        title = (text_of(span) if span else "") or a.get("title", "")
+        if not href or not title or href in seen:
+            continue
+        seen.add(href)
+        im = li.find("img")
+        img = ""
+        if im and im.get("src"):
+            src = orig_img(im["src"])
+            alt = (im.get("alt") or "").strip()
+            if alt.lower() in ("header", "logo", "portrait"):
+                alt = ""
+            contain = ' class="contain"' if re.search(r"(logo|qr)[^/]*\.png$", src, re.I) else ""
+            img = f'<img{contain} src="{esc(src)}" alt="{esc(alt)}" loading="lazy">'
+        title = re.sub(r"\s+-\s+", " – ", title)
+        out.append(f'          <li><a class="card" href="{esc(href)}">{img}<span class="card-body">'
+                   f'<span class="card-title">{esc(title)}</span><span class="card-more">Mehr erfahren</span></span></a></li>')
+    return "\n".join(out)
 
-print(f"{written} Unterseiten + Übersicht geschrieben")
+
+teaser_lists = hcontent.select("ul.teaserpicturecaption")
+if len(teaser_lists) < 2:
+    fail("Aktuelles/Partner auf der Startseite nicht gefunden")
+aktuelles = home_cards(teaser_lists[0])
+partner = home_cards(teaser_lists[1])
+if not aktuelles or not partner:
+    fail("Aktuelles/Partner auf der Startseite sind leer")
+
+partner_text = ""
+for h in hcontent.find_all("h1"):
+    if "mehr für sie drin" in text_of(h).lower():
+        nxt = h.find_next("div", class_="paragraph")
+        partner_text = re.sub(r"\s+([,.!?])", r"\1", text_of(nxt)) if nxt else ""
+partner_text = partner_text or ("Die Salzburger Seniorengemeinschaft und die 50plus-Partnerunternehmen legen sich mächtig ins "
+                                "Zeug für die Mitglieder. Deshalb genießen Sie besondere Behandlungen und speziellen Service, "
+                                "nicht nur bei diversen Firmen.")
+
+pdf = ""
+for a in hsoup.find_all("a", href=True):
+    if a["href"].lower().split("?")[0].endswith(".pdf"):
+        pdf = abs_src(a["href"], home_url)
+        break
+pdf = pdf or BASE + "termine/"
+
+slides = [a.get("href") for a in hsoup.select("#yttriumbullets a") if a.get("href")]
+hero = abs_src(slides[0], home_url) if slides else (
+    BASE + "images/pictures/w7e03100a2b1c0036df3035260a3c455/S_5555_www.hannelore-kirchner.com_2023.jpg")
+
+# Termine aus dem Kalender der Originalseite
+WOCHENTAGE = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"]
+MONATE = ["Jänner", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
+
+cal = hsoup.select_one(".paragraphcalendar table[data-year]")
+termine_titel, termine = "Termine", ""
+if cal:
+    year, month = int(cal["data-year"]), int(cal["data-month"])
+    termine_titel = f"Termine im {MONATE[month - 1]} {year}"
+    info = {d.get("id", "").replace("paragraphcalenderevent", ""): text_of(d)
+            for d in hsoup.select(".paragraphcalendareventinfo > div")}
+    items = []
+    for td in cal.select("td.calendarevent"):
+        try:
+            day = int(text_of(td))
+        except ValueError:
+            continue
+        wd = WOCHENTAGE[datetime.date(year, month, day).weekday()]
+        parts = []
+        for eid in (td.get("data-ids") or "").split():
+            t = info.get(eid, "").strip()
+            if not t:
+                continue
+            m = re.match(r"^(\d{1,2}[:.]\d{2})(?:\s*[-–]\s*(\d{1,2}[:.]\d{2}))?\s*(.*)$", t)
+            zeit, rest = "", t
+            if m:
+                zeit = m.group(1) + (" – " + m.group(2) if m.group(2) else "") + " Uhr"
+                rest = m.group(3)
+            tag = ""
+            vm = re.search(r",?\s*((?:bitte\s+)?mit\s+Voranmeldung!?)\s*$", rest, re.I)
+            if vm:
+                tag = vm.group(1)[0].upper() + vm.group(1)[1:]
+                rest = rest[:vm.start()].strip()
+            block = (f'<p class="time">{esc(zeit)}</p>' if zeit else "") + f"<h3>{esc(rest)}</h3>"
+            if tag:
+                block += f'<p class="tag">{esc(tag)}</p>'
+            parts.append(block)
+        if parts:
+            items.append(
+                '          <li class="event">\n'
+                f'            <div class="date"><span class="wd">{wd}</span><span class="day">{day}.</span>'
+                f'<span class="mon">{MONATE[month - 1]}</span></div>\n'
+                f'            <div class="event-body">{"<hr>".join(parts)}</div>\n'
+                '          </li>')
+    if items:
+        termine = '<ol class="events">\n' + "\n".join(items) + "\n        </ol>"
+if not termine:
+    termine = '<p class="lead">Aktuell sind keine Termine eingetragen. Alle Termine finden Sie auf der Terminseite.</p>'
+
+home = open(os.path.join(HERE, "home-template.html"), encoding="utf-8").read()
+for key, val in {
+    "HERO": esc(hero), "AKTUELLES": aktuelles, "PARTNER": partner, "PARTNER_TEXT": esc(partner_text),
+    "TERMINE_TITEL": esc(termine_titel), "TERMINE": termine, "NEWSLETTER_PDF": esc(pdf),
+}.items():
+    home = home.replace("{{" + key + "}}", val)
+open(os.path.join(OUT, "index.html"), "w", encoding="utf-8").write(home)
+
+# Stil und Skript
+for f in os.listdir(os.path.join(HERE, "static")):
+    shutil.copy(os.path.join(HERE, "static", f), os.path.join(OUT, f))
+
+print(f"{written} Unterseiten + Startseite + Übersicht geschrieben")

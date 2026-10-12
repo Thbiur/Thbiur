@@ -1,6 +1,11 @@
+"""Lädt alle Seiten von www.50pluscenter.at in einen Ordner (für build.py).
+
+Aufruf:  python3 tools/50plus/crawl.py <crawl-ordner>
+"""
 import re, os, sys, time, urllib.request, urllib.parse, hashlib, json
 BASE = "https://www.50pluscenter.at/"
 out = sys.argv[1]
+os.makedirs(out, exist_ok=True)
 seen, queue, pages = set(), [BASE], {}
 def norm(u):
     u = urllib.parse.urljoin(BASE, u).split('#')[0]
@@ -34,3 +39,5 @@ while queue:
     time.sleep(0.2)
 json.dump(pages, open(os.path.join(out, "_index.json"), "w"), indent=1)
 print(len(pages), "pages")
+if BASE not in pages:
+    sys.exit("ABBRUCH: Startseite nicht erreichbar")

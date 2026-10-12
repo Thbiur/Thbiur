@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>50plus Center Salzburg</title>
+  <meta name="description" content="Herzlich willkommen in der 50plus Familie! 50plus Center und Salzburger Senioren-, Pensionisten- und Rentnerbund.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" href="https://www.50pluscenter.at/images/pictures/logo-neufav.png">
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    // Gespeicherte Schriftgröße sofort anwenden (verhindert Springen beim Laden)
+    try { var fs = localStorage.getItem("schrift"); if (fs) document.documentElement.dataset.schrift = fs; } catch (e) {}
+  </script>
+</head>
+<body>
+  <a class="skip" href="#inhalt">Direkt zum Inhalt springen</a>
+
+  <!-- ═══════ Obere Leiste: Anrufen + Schriftgröße ═══════ -->
+  <div class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="topbar-call" href="tel:+4366262573600">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>
+        <span><span class="call-prefix">Rufen Sie uns an: </span><strong>0662 / 62 57 360</strong></span>
+      </a>
+      <div class="fontsize" role="group" aria-label="Schriftgröße">
+        <span class="fontsize-label">Schriftgröße:</span>
+        <button type="button" data-size="normal" aria-label="Normale Schrift">A</button>
+        <button type="button" data-size="gross" aria-label="Große Schrift">A<sup>+</sup></button>
+        <button type="button" data-size="sehrgross" aria-label="Sehr große Schrift">A<sup>++</sup></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ Kopf mit Logo und Hauptmenü ═══════ -->
+  <header class="header" id="top">
+    <div class="wrap">
+      <a class="logo" href="./" aria-label="50plus – zur Startseite">
+        <img src="https://www.50pluscenter.at/images/pictures/layoutpictures/50pluslogo%20trans.jpg" alt="50plus GmbH" width="316" height="62">
+      </a>
+      <nav class="mainnav" aria-label="Hauptmenü">
+        <ul>
+          <li><a href="termine/index.html"><span class="dot c1" aria-hidden="true"></span>Termine</a></li>
+          <li><a href="themen/index.html"><span class="dot c2" aria-hidden="true"></span>Angebote</a></li>
+          <li><a href="mitmachen/index.html"><span class="dot c3" aria-hidden="true"></span>Mitmachen</a></li>
+          <li><a href="unser-team/index.html"><span class="dot c4" aria-hidden="true"></span>Kontakt</a></li>
+          <li><a href="uebersicht.html" class="more">Alle Seiten</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="inhalt">
+    <!-- ═══════ Begrüßung ═══════ -->
+    <section class="hero">
+      <div class="hero-img">
+        <img src="{{HERO}}" alt="Gemütlicher Wohnraum mit Esstisch im 50plus Center" width="1600" height="534">
+      </div>
+      <div class="wrap hero-text">
+        <h1>Herzlich willkommen in der 50plus Familie!</h1>
+        <div class="hero-buttons">
+          <a class="btn btn-primary" href="#termine">Termine ansehen</a>
+          <a class="btn btn-secondary" href="mitmachen/index.html">Gratis Infopaket anfordern</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ Aktuelles ═══════ -->
+    <section class="section" id="aktuelles" aria-labelledby="h-aktuelles">
+      <div class="wrap">
+        <h2 id="h-aktuelles" class="section-title"><span class="bar c1" aria-hidden="true"></span>Aktuelles</h2>
+        <ul class="cards">
+{{AKTUELLES}}
+        </ul>
+      </div>
+    </section>
+
+    <!-- ═══════ Termine ═══════ -->
+    <section class="section section-tint" id="termine" aria-labelledby="h-termine">
+      <div class="wrap">
+        <h2 id="h-termine" class="section-title"><span class="bar c2" aria-hidden="true"></span>{{TERMINE_TITEL}}</h2>
+        <p class="note">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5v.5"/></svg>
+          Für die meisten Termine ist eine <strong>Voranmeldung</strong> nötig.
+        </p>
+        {{TERMINE}}
+        <div class="button-row">
+          <a class="btn btn-primary" href="tel:+4366262573600">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>
+            50plus Center anrufen
+          </a>
+          <a class="btn btn-secondary" href="termine/termineseite.html">Alle Termine ansehen</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ Angebote / Partner ═══════ -->
+    <section class="section" id="angebote" aria-labelledby="h-angebote">
+      <div class="wrap">
+        <h2 id="h-angebote" class="section-title"><span class="bar c3" aria-hidden="true"></span>Da ist mehr für Sie drin!</h2>
+        <p class="lead">{{PARTNER_TEXT}}</p>
+        <ul class="cards cards-small">
+{{PARTNER}}
+        </ul>
+        <div class="button-row">
+          <a class="btn btn-secondary" href="themen/angebote.html">Alle Angebote ansehen</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ Mitmachen: Infopaket + Newsletter ═══════ -->
+    <section class="section section-tint" id="mitmachen" aria-labelledby="h-mitmachen">
+      <div class="wrap">
+        <h2 id="h-mitmachen" class="section-title"><span class="bar c4" aria-hidden="true"></span>Mitmachen</h2>
+        <div class="two">
+          <div class="box box-accent">
+            <h3>Klingt interessant …?</h3>
+            <p>Dann fordern Sie jetzt Ihr <strong>gratis Infopaket</strong> an!</p>
+            <a class="btn btn-primary" href="mitmachen/index.html">Zum Anfrage-Formular</a>
+          </div>
+          <div class="box">
+            <h3>Am Laufenden bleiben</h3>
+            <p>Mit unserem Newsletter erhalten Sie alle zwei Wochen eine topaktuelle Terminvorschau, spezielle Rabatte bei Partnerfirmen, wichtige Informationen, uvm. Verpassen Sie keinen Termin mehr! Selbstverständlich können Sie den Newsletter jederzeit wieder abmelden. Eine Mail genügt.</p>
+            <div class="button-col">
+              <a class="btn btn-primary" href="mailto:office@seniorenbund.com?subject=Newsletter%20bestellen&amp;body=Bitte%20senden%20Sie%20mir%20den%20Newsletter%20an%20diese%20E-Mail-Adresse.">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+                Newsletter per E-Mail bestellen
+              </a>
+              <a class="btn btn-secondary" href="{{NEWSLETTER_PDF}}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+                Aktueller Newsletter (PDF)
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="box social">
+          <h3>Folgen Sie uns auf Facebook und Instagram</h3>
+          <div class="social-grid">
+            <a class="social-link" href="https://www.facebook.com/share/19U8wen78p/">
+              <img src="https://www.50pluscenter.at/images/pictures/facebook-logo-_1_.png" alt="" width="56" height="56" loading="lazy">
+              <span>Facebook</span>
+            </a>
+            <a class="social-link" href="https://www.instagram.com/seniorenbundsalzburg/">
+              <img src="https://www.50pluscenter.at/images/pictures/instagram__.jpg" alt="" width="56" height="56" loading="lazy">
+              <span>Instagram</span>
+            </a>
+          </div>
+          <div class="social-shots">
+            <a href="https://www.instagram.com/seniorenbundsalzburg/"><img src="https://www.50pluscenter.at/images/pictures/instagram.png" alt="Instagram-Seite des Seniorenbunds Salzburg" loading="lazy"></a>
+            <a href="https://www.facebook.com/Seniorenbund-Salzburg-151109371725627/?ref=hl"><img src="https://www.50pluscenter.at/images/pictures/fb-2017-april.jpg" alt="Facebookauszug" loading="lazy"></a>
+          </div>
+        </div>
+
+        <div class="box partner">
+          <a href="http://www.50pluspartner.com/" class="partner-logo"><img src="https://www.50pluscenter.at/images/pictures/layoutpictures/pluspartnergut.jpg" alt="50plus Partner" loading="lazy"></a>
+          <p>Sie denken, Ihr Produkt passt zu unserer Philosophie und bietet unseren Mitgliedern einen echten Mehrwert?</p>
+          <a class="btn btn-secondary" href="http://www.50pluspartner.com/">Hier finden Sie weitere Informationen</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ Kontakt ═══════ -->
+    <section class="section" id="kontakt" aria-labelledby="h-kontakt">
+      <div class="wrap">
+        <h2 id="h-kontakt" class="section-title"><span class="bar c1" aria-hidden="true"></span>Kontakt</h2>
+        <div class="two">
+          <div class="box contact">
+            <h3>50plus Center</h3>
+            <p class="addr">Alpenstraße 99, 1. Stock<br>5020 Salzburg</p>
+            <p class="bus">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="15" rx="3"/><path d="M4 11h16M8 21v-3M16 21v-3"/><circle cx="8" cy="14.5" r=".8"/><circle cx="16" cy="14.5" r=".8"/></svg>
+              <span>Buslinie 3, 8, 170, 175, 270 und 840<br>Haltestelle Ginzkeyplatz</span>
+            </p>
+            <div class="button-col">
+              <a class="btn btn-primary" href="tel:+4366262573600">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>
+                0662 / 62 57 360
+              </a>
+              <a class="btn btn-secondary" href="mailto:office@50plusgmbh.com">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+                office@50plusgmbh.com
+              </a>
+              <a class="btn btn-secondary" href="https://www.google.com/maps/search/?api=1&amp;query=Alpenstra%C3%9Fe%2099%2C%205020%20Salzburg">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+                Auf der Karte zeigen
+              </a>
+            </div>
+          </div>
+          <div class="box contact">
+            <h3>Salzburger Senioren-, Pensionisten- und Rentnerbund</h3>
+            <p class="addr">Merianstraße 13, T6, 1. Stock<br>5020 Salzburg</p>
+            <p class="bus">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="15" rx="3"/><path d="M4 11h16M8 21v-3M16 21v-3"/><circle cx="8" cy="14.5" r=".8"/><circle cx="16" cy="14.5" r=".8"/></svg>
+              <span>Buslinie 21<br>Haltestelle Merianstraße</span>
+            </p>
+            <div class="button-col">
+              <a class="btn btn-primary" href="tel:+4366287568500">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>
+                0662 / 87 56 850
+              </a>
+              <a class="btn btn-secondary" href="mailto:office@seniorenbund.com">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+                office@seniorenbund.com
+              </a>
+              <a class="btn btn-secondary" href="https://www.google.com/maps/search/?api=1&amp;query=Merianstra%C3%9Fe%2013%2C%205020%20Salzburg">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+                Auf der Karte zeigen
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ Alle Seiten (statt verschachtelter Menüs) ═══════ -->
+    <section class="section section-tint" id="alle-seiten" aria-labelledby="h-alle">
+      <div class="wrap">
+        <h2 id="h-alle" class="section-title"><span class="bar c2" aria-hidden="true"></span>Alle Seiten im Überblick</h2>
+        <div class="sitemap">
+          <div>
+            <h3><a href="themen/index.html">Angebote</a></h3>
+            <ul>
+              <li><a href="themen/aussteller/index.html">Aussteller</a></li>
+              <li><a href="themen/beratung/index.html">Beratung</a></li>
+              <li><a href="themen/gesundheit/index.html">Gesundheit</a></li>
+              <li><a href="themen/sport/index.html">Sport</a></li>
+              <li><a href="themen/reisen/index.html">Reisen</a></li>
+              <li><a href="themen/reisen/landesreise-/index.html">Vorhergehende Landesreisen</a></li>
+              <li><a href="themen/reisen/kulturreise/index.html">Vorhergehende Kulturreisen</a></li>
+              <li><a href="themen/lernen/index.html">Lernen</a></li>
+              <li><a href="themen/wohngemeinschaft/index.html">Wohngemeinschaft</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3><a href="seniorenbund/index.html">Senioren</a></h3>
+            <ul>
+              <li><a href="seniorenbund/interessensvertretung/index.html">Interessensvertretung</a></li>
+              <li><a href="seniorenbund/formulare/index.html">Formulare</a></li>
+              <li><a href="seniorenbund/formulare/formulare-fuer-funktionaere/index.html">Formulare für Funktionäre</a></li>
+              <li><a href="seniorenbund/team/index.html">Team</a></li>
+              <li><a href="https://www.50pluscenter.at/seniorenbund/oesb/">ÖSB</a></li>
+            </ul>
+            <h3><a href="regional/index.html">Regional</a></h3>
+            <ul>
+              <li><a href="regional/flachgau/index.html">Flachgau</a></li>
+              <li><a href="regional/stadt-salzburg/index.html">Stadt Salzburg</a></li>
+              <li><a href="regional/tennengau/index.html">Tennengau</a></li>
+              <li><a href="regional/pongau/index.html">Pongau</a></li>
+              <li><a href="regional/lungau/index.html">Lungau</a></li>
+              <li><a href="regional/pinzgau/index.html">Pinzgau</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3><a href="50plus-gmbh/index.html">50plus GmbH</a></h3>
+            <ul>
+              <li><a href="50plus-gmbh/medien/index.html">Medien</a></li>
+              <li><a href="50plus-gmbh/forschungsprojekte/index.html">Forschungsprojekte</a></li>
+              <li><a href="50plus-gmbh/mystery-shopping/index.html">Mystery Shopping</a></li>
+              <li><a href="50plus-gmbh/mystery-shopping/rund-ums-haus/index.html">Rund ums Haus</a></li>
+              <li><a href="50plus-gmbh/mystery-shopping/kulinarisches/index.html">Kulinarisches</a></li>
+              <li><a href="50plus-gmbh/mystery-shopping/freizeit/index.html">Freizeit</a></li>
+              <li><a href="50plus-gmbh/mystery-shopping/technische-geraete/index.html">Technische Geräte</a></li>
+              <li><a href="50plus-gmbh/mystery-shopping/gesundheit-aerzte/index.html">Gesundheit</a></li>
+              <li><a href="50plus-gmbh/team/index.html">Team</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Weitere Seiten</h3>
+            <ul>
+              <li><a href="mitmachen/index.html">Mitmachen</a></li>
+              <li><a href="termine/index.html">Termine</a></li>
+              <li><a href="https://www.50pluscenter.at/argelongevity/">ARGELongevity</a></li>
+              <li><a href="unser-team/index.html">Kontakt</a></li>
+              <li><a href="unser-team/kontakt.html">Kontakt / Impressum</a></li>
+              <li><a href="http://seniorensalzburg.info/">Der Landesseniorenbeirat</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════ Unterstützer ═══════ -->
+    <section class="section" aria-labelledby="h-support">
+      <div class="wrap">
+        <h2 id="h-support" class="section-title"><span class="bar c3" aria-hidden="true"></span>Mit freundlicher Unterstützung</h2>
+        <ul class="supporters">
+          <li>
+            <img src="https://www.50pluscenter.at/images/pictures/wappen.jpg" alt="Wappen des Landes Salzburg" loading="lazy" class="wappen">
+            <p>Die Angebote der Seniorenhilfe und des Senioren-, Pensionisten- und Rentnerbundes werden durch das Land Salzburg unterstützt.</p>
+          </li>
+          <li>
+            <img src="https://www.50pluscenter.at/images/pictures/stadtlogo_rgb.jpg" alt="Logo Stadt Salzburg" loading="lazy">
+            <p>Die Angebote der Seniorenhilfe und des Senioren-, Pensionisten- und Rentnerbundes werden durch Förderungen der Stadt:Salzburg unterstützt.</p>
+          </li>
+          <li>
+            <img src="https://www.50pluscenter.at/images/pictures/logo-flughaben-szg.jpg" alt="Logo Salzburg Airport" loading="lazy">
+            <p>Die Flugreisen des Salzburger Seniorenbundes werden mit freundlicher Unterstützung des Salzburg Airport durchgeführt.</p>
+          </li>
+          <li>
+            <img src="https://www.50pluscenter.at/images/pictures/lott_seniorenhilfe-200x62-rz.jpg" alt="Logo Seniorenhilfe" loading="lazy">
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <p>Alle Angaben ohne Gewähr. Vorbehaltlich Druckfehler.</p>
+      <p><a href="unser-team/kontakt.html">Kontakt / Impressum</a></p>
+      <a class="btn btn-light" href="#top">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+        Zurück zum Anfang der Seite
+      </a>
+    </div>
+  </footer>
+
+  <script src="site.js"></script>
+</body>
+</html>

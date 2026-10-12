@@ -1,0 +1,55 @@
+# Holt einmal pro Woche die Inhalte von www.50pluscenter.at und baut daraus
+# die seniorenfreundliche Website im Ordner 50plus/ neu. Gibt es Änderungen,
+# werden sie automatisch committet (und damit z.B. über GitHub Pages oder
+# Netlify veröffentlicht). Schlägt Abruf oder Prüfung fehl, bleibt die
+# bisherige Website unverändert.
+name: 50plus-Website aktualisieren
+
+on:
+  schedule:
+    - cron: "13 4 * * 1" # jeden Montag um 04:13 UTC (ca. 6 Uhr in Salzburg)
+  workflow_dispatch: # zusätzlich per Knopfdruck unter "Actions" startbar
+
+permissions:
+  contents: write
+
+concurrency:
+  group: 50plus-aktualisieren
+  cancel-in-progress: false
+
+jobs:
+  aktualisieren:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Werkzeuge installieren
+        run: pip install beautifulsoup4==4.12.3 lxml==5.3.0
+
+      - name: Offizielle Website abrufen
+        run: python tools/50plus/crawl.py "$RUNNER_TEMP/crawl"
+
+      - name: Neue Website bauen
+        run: python tools/50plus/build.py "$RUNNER_TEMP/crawl" "$RUNNER_TEMP/site"
+
+      - name: Ergebnis übernehmen
+        run: |
+          rm -rf 50plus
+          cp -r "$RUNNER_TEMP/site" 50plus
+
+      - name: Änderungen speichern
+        run: |
+          git config user.name "50plus-Aktualisierung"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A 50plus
+          if git diff --cached --quiet; then
+            echo "Keine Änderungen auf der offiziellen Website."
+          else
+            git commit -m "50plus: Inhalte von www.50pluscenter.at aktualisiert ($(date -u +%Y-%m-%d))"
+            git push
+          fi
